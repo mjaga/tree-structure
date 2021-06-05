@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="treeview">
+    <button type="button" (click)="toggle(true)" class="btn btn-primary">
+      Expand All
+    </button>
+    <button type="button" (click)="toggle(false)" class="btn btn-danger">
+      Collapse All
+    </button>
+    <ng-container *ngTemplateOutlet="countryDetails; context: countryDetail">
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #countryDetails let-countryValue="values">
+  <ul *ngFor="let country of countryValue | sort">
+    <li (click)="country.show = !country.show">
+      <i
+        class="glyphicon"
+        [ngClass]="{
+          'glyphicon-arrow-right': !country.show,
+          'glyphicon-arrow-down': country.show
+        }"
+      ></i>
+
+      <label>
+        {{ country.name }}
+      </label>
+    </li>
+    <div [hidden]="!country.show">
+      <div *ngIf="country.values && country.values.length > 0; else population">
+        <ng-container *ngTemplateOutlet="countryDetails; context: country">
+        </ng-container>
+      </div>
+
+      <ng-template #population>
+        <span>
+          {{ country.value.name }}
+        </span>
+        -
+        <span class="state-population">
+          {{ country.value.value | numberFormat }}
+        </span>
+      </ng-template>
+    </div>
+  </ul>
+</ng-template>
